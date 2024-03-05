@@ -7,7 +7,7 @@ import random
 #define constants 
 WIDTH = 500
 HEIGHT = 500
-DELAY = 350  # Milliseconds between screen updates
+DELAY = 100  # Milliseconds between screen updates
 offsets = {
     "up":(0,20),
     "down":(0,-20),
@@ -16,6 +16,29 @@ offsets = {
 }
 FOOD_SIZE = 10
 
+def bind_direction_keys():
+    screen.onkey(lambda: set_snake_direction("up"), "Up")
+    screen.onkey(lambda: set_snake_direction("down"), "Down")
+    screen.onkey(lambda: set_snake_direction("left"), "Left")
+    screen.onkey(lambda: set_snake_direction("right"), "Right")
+
+#replacing the go functions by using 1 function
+def set_snake_direction(direction):
+    global snake_direction
+    if direction == "up":
+        if snake_direction != "down":  # so no self-collision by pressing wrong key.
+            snake_direction = "up"
+    elif direction == "right":
+        if snake_direction != "left":
+            snake_direction = "right"
+    elif direction == "down":
+        if snake_direction != "up":
+            snake_direction = "down"
+    elif direction == "left":
+        if snake_direction != "right":
+            snake_direction = "left"
+
+'''
 def go_up():
     global snake_direction
     if snake_direction != "down":
@@ -35,7 +58,7 @@ def go_left():
     global snake_direction
     if snake_direction != "right":
         snake_direction = "left"
-
+'''
 
 
 #function for tutrle to move
@@ -49,7 +72,7 @@ def game_loop():
     # check for collisions
     if new_head in snake or new_head[0]<-WIDTH/2 or new_head[0] >WIDTH /2\
     or new_head[1] <- HEIGHT/2 or new_head[1] >HEIGHT/2:
-        turtle.bye()
+        reset()
     else:
         # No collision so we can continue moving the snake.
         snake.append(new_head)
@@ -93,6 +116,16 @@ def get_distance(pos1, pos2):
     distance = ((y2 - y1) ** 2 + (x2 - x1) ** 2) ** 0.5  # Pythagoras
     return distance
 
+def reset():
+    global score, snake, snake_direction, food_pos
+    score = 0
+    snake = [[0, 0], [0, 20], [0, 40], [0, 60], [0, 80]]
+    snake_direction = "up"
+    food_pos = get_random_food_pos()
+    food.goto(food_pos)  # tuple - if no second argument provided this is treated as an xs, y pair.
+    game_loop()
+
+
 #cereate a window where we will do our drawing
 screen = turtle.Screen()
 screen.setup(WIDTH,HEIGHT)
@@ -102,10 +135,13 @@ screen.tracer(0)
 
 #event handler
 screen.listen()
+'''
 screen.onkey(go_up, "Up")
 screen.onkey(go_down, "Down")
 screen.onkey(go_right, "Right")
 screen.onkey(go_left, "Left")
+'''
+bind_direction_keys()
 
 my_snake = turtle.Turtle("square")
 my_snake.penup()
@@ -115,11 +151,12 @@ snake = [[0,0], [20,0],[40,0],[60,0],[80,0]]
 snake_direction = "up"
 score = 0
 
+'''
 #draw a snake
 for segment in snake:
     my_snake.goto(segment[0],segment[1])
     my_snake.stamp()
-
+'''
 # Food
 food = turtle.Turtle()
 food.shape("circle")
@@ -130,7 +167,7 @@ food_pos = get_random_food_pos()
 food.goto(food_pos)
 
 #set animation
-game_loop()
+reset()
 
 # Finish nicely
 turtle.done()

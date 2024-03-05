@@ -1,3 +1,5 @@
+#https://github.com/SideekaAyoob/Python_Snake
+#to run python stamper1_5.py
 import turtle
 
 #define constants 
